@@ -57,8 +57,6 @@ if ( ! empty( $db->error ) )
 }
 unset( $db_config['dbpass'] );
 //mysql: end code
-global $global_config;
-$global_config = array();
 
 global $Request; 
 $Request = new Request();
@@ -95,8 +93,8 @@ if ( defined( 'DF_IS_USER' ) )
 	}
 }
 
-global $admin_info,$main_permission;
-$main_permission = $admin_info = array();
+global $admin_info,$main_permission,$global_config;
+$main_permission = $admin_info = $global_config = array();
 $login = isset( $_SESSION['is_alogin'] ) ? $_SESSION['is_alogin'] : false;
 
 if ( $login ) define( "DF_IS_ADMIN", TRUE );
@@ -116,5 +114,14 @@ if ( defined( 'DF_IS_ADMIN' ) )
 		}
 	}
 }
+//getconfig
+$sql = "SELECT * FROM `tbl_config` WHERE 1";
+$result = $db->sql_query( $sql );
+while ( $row = $db->sql_fetchrow( $result, 2 ) )
+{
+    $global_config[$row['name']] = $row;
+}
+
+savelog($user_info,$admin_info);
 
 ?>
